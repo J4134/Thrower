@@ -2,9 +2,12 @@
 
 public class DynamicTrajectoryRenderer : TrajectoryRenderer
 {
+    #region Field Declarations
+
     [SerializeField] private float _step = 0.1f;
     private int DotsCount(Vector2 throwVector) => Mathf.RoundToInt(throwVector.magnitude);
 
+    #endregion
 
     #region Overridden Methods
 
@@ -12,14 +15,16 @@ public class DynamicTrajectoryRenderer : TrajectoryRenderer
     {
         if (_previousThrowVector != throwVector)
         {
+            int newDotsCount = DotsCount(throwVector);
+            int currentDotsCount = _instantiatedDots.Count;
             
-            if (_instantiatedDots.Count < DotsCount(throwVector))
+            if (currentDotsCount < newDotsCount)
             {
-                CreateDots(DotsCount(throwVector) - _instantiatedDots.Count);
+                CreateDots(newDotsCount - currentDotsCount);
             }
-            else if (_instantiatedDots.Count > DotsCount(throwVector))
+            else if (currentDotsCount > newDotsCount)
             {
-                DeleteDots(_instantiatedDots.Count - DotsCount(throwVector));
+                DeleteDots(currentDotsCount - newDotsCount);
             }
 
             RelocateDots(_instantiatedDotsPosition, CalculateDotsPositions(origin, throwVector, _instantiatedDots.Count, _step));
@@ -44,5 +49,4 @@ public class DynamicTrajectoryRenderer : TrajectoryRenderer
 
     #endregion
 
-    
 }

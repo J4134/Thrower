@@ -42,13 +42,12 @@ public abstract class TrajectoryRenderer : MonoBehaviour
         {
             for (int i = 0; i < dotsCount; i++)
             {
-                int pos = _instantiatedDots.Count - 1;
-                Destroy(_instantiatedDots[pos]);
-                _instantiatedDots.RemoveAt(pos);
-                _instantiatedDotsPosition.RemoveAt(pos);
+                int lastPos = _instantiatedDots.Count - 1;
+                Destroy(_instantiatedDots[lastPos]);
+                _instantiatedDots.RemoveAt(lastPos);
+                _instantiatedDotsPosition.RemoveAt(lastPos);
             }
         }
-        
     }
 
 

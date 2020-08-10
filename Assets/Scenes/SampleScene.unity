@@ -509,6 +509,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dotPrefab: {fileID: 6295032405342969024, guid: 8b4873031b2a73849a8a361af8b1543d,
     type: 3}
+  _step: 0.2
 --- !u!1 &719513364
 GameObject:
   m_ObjectHideFlags: 0
