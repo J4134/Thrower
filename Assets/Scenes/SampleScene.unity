@@ -504,13 +504,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 698187468}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0a5bb72ae90039488ee985e5ec3489b, type: 3}
+  m_Script: {fileID: 11500000, guid: 8673d04941819704a8c1643e68c343ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _dotsCount: 10
   dotPrefab: {fileID: 6295032405342969024, guid: 8b4873031b2a73849a8a361af8b1543d,
     type: 3}
-  dotsAmount: 0
-  dotsCount: 15
 --- !u!1 &719513364
 GameObject:
   m_ObjectHideFlags: 0
