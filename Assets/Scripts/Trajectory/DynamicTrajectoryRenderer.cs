@@ -1,18 +1,48 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class DynamicTrajectoryRenderer : MonoBehaviour
+public class DynamicTrajectoryRenderer : TrajectoryRenderer
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private float _step = 0.1f;
+    private int DotsCount(Vector2 throwVector) => Mathf.RoundToInt(throwVector.magnitude);
+
+
+    #region Overridden Methods
+
+    public override void DrawTrajectory(Vector2 origin, Vector2 throwVector)
     {
-        
+        if (_previousThrowVector != throwVector)
+        {
+            
+            if (_instantiatedDots.Count < DotsCount(throwVector))
+            {
+                CreateDots(DotsCount(throwVector) - _instantiatedDots.Count);
+            }
+            else if (_instantiatedDots.Count > DotsCount(throwVector))
+            {
+                DeleteDots(_instantiatedDots.Count - DotsCount(throwVector));
+            }
+
+            RelocateDots(_instantiatedDotsPosition, CalculateDotsPositions(origin, throwVector, _instantiatedDots.Count, _step));
+
+            foreach (GameObject dot in _instantiatedDots)
+            {
+                dot.SetActive(true);
+            }
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void DeleteTrajectory()
     {
-        
+        if (_instantiatedDots.Count > 0)
+        {
+            foreach (GameObject dot in _instantiatedDots)
+            {
+                dot.SetActive(false);
+            }
+        }
     }
+
+    #endregion
+
+    
 }

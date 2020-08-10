@@ -2,29 +2,18 @@
 
 public class FixedTrajectoryRenderer : TrajectoryRenderer
 {
-    [SerializeField] private int _dotsCount = 10;
-    [SerializeField] private GameObject dotPrefab;
+    #region Field Declarations
 
-    private void Awake()
-    {
-         _gravity = Physics2D.gravity;
-    }
+    [SerializeField] private int _dotsCount = 10;
+
+    #endregion
 
     private void Start()
     {
         CreateDots(_dotsCount);
     }
 
-    private void CreateDots(int dotsCount)
-    {
-        for (int i = 0; i < dotsCount; i++)
-        {
-            GameObject newDot = Instantiate(dotPrefab, gameObject.transform);
-            newDot.SetActive(false);
-            _instantiatedDots.Add(newDot);
-            _instantiatedDotsPosition.Add(newDot.transform);
-        }
-    }
+    #region Overridden Methods
 
     public override void DrawTrajectory(Vector2 origin, Vector2 throwVector)
     {
@@ -50,5 +39,6 @@ public class FixedTrajectoryRenderer : TrajectoryRenderer
         }
     }
 
+    #endregion
 
 }

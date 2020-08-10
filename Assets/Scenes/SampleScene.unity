@@ -504,10 +504,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 698187468}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8673d04941819704a8c1643e68c343ff, type: 3}
+  m_Script: {fileID: 11500000, guid: eb9c46ed4898fbf46adc598546f0a4a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dotsCount: 10
   dotPrefab: {fileID: 6295032405342969024, guid: 8b4873031b2a73849a8a361af8b1543d,
     type: 3}
 --- !u!1 &719513364
