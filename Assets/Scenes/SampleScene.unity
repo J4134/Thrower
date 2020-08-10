@@ -510,7 +510,7 @@ MonoBehaviour:
   dotPrefab: {fileID: 6295032405342969024, guid: 8b4873031b2a73849a8a361af8b1543d,
     type: 3}
   dotsAmount: 0
-  dotsCount: 10
+  dotsCount: 15
 --- !u!1 &719513364
 GameObject:
   m_ObjectHideFlags: 0
