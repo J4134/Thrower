@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[AddComponentMenu("Item/ItemScripts")]
+[AddComponentMenu("ItemScript")]
 [RequireComponent(typeof(Rigidbody2D))]
 public class Ball : MonoBehaviour, IThrowable<Vector2>
 {
@@ -25,7 +25,7 @@ public class Ball : MonoBehaviour, IThrowable<Vector2>
         {
             // TODO: оповещение объекта score о пападании
             Debug.Log("Есть пробитие!");
-            EventBroker.CallHitTarget();
+            SceneEventBroker.CallHitTarget();
         }
     }
 

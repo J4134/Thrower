@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class EventBroker
+public class SceneEventBroker
 {
     public static event Action HitTarget;
 

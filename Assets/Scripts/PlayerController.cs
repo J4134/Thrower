@@ -34,6 +34,8 @@ public class PlayerController : MonoBehaviour
 
     private bool isPressed;
 
+    IThrowable<Vector2> _iThrowable;
+
     #endregion
 
     #region Startup
@@ -100,17 +102,14 @@ public class PlayerController : MonoBehaviour
 
     private void ChangeItemPos(Vector2 newPos)
     {
-        _item.GetComponent<Transform>().position = newPos;
+        _item.transform.position = newPos;
     }
 
-    private void ThrowItem(Vector2 throwVec)
+    private void ThrowItem(Vector2 throwVector)
     {
         ChangeItemPos(_throwPointPosition);
 
-        IThrowable<Vector2> iThrowable = _item.GetComponent<IThrowable<Vector2>>();
-        iThrowable.Throw(throwVec);
-
-        //Destroy(_item, 7f);
+        _item.GetComponent<IThrowable<Vector2>>()?.Throw(throwVector);
 
         StartCoroutine(SpawnItem(afterThrowDelay));
     }
