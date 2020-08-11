@@ -687,9 +687,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 675662c5e437de545bc3ee4423af3634, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemPrefab: {fileID: 3366718698019429003, guid: 4427bb026dada1941a05b1ec978f56d8,
+  _itemPrefab: {fileID: 3366718698019429003, guid: 4427bb026dada1941a05b1ec978f56d8,
     type: 3}
-  TrajectoryRenderer: {fileID: 698187468}
+  _trajectoryRenderer: {fileID: 698187470}
   _offset: {x: 0, y: 5}
 --- !u!4 &980858889
 Transform:
