@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,30 +16,53 @@ public class PlayerController : MonoBehaviour
 
     private GameObject _item;
     private Rigidbody2D _itemRB;
-    private Camera _cam;
 
     private TrajectoryRenderer _trajectoryRenderer;
+    private PlayerInputHandler _playerInput;
 
-    [SerializeField] private Vector2 offset = new Vector2(0f, 5f);
+    [SerializeField] private Vector2 _offset = new Vector2(0f, 5f);
 
     private Vector2 _playerPosition;
     private Vector2 _itemSocketPosition;
     private Vector2 _throwPointPosition;
-    private Vector2 _mousePosition;
 
-    // Переписать используя сеттер
-    private Vector2 _throwVector;
+    private Vector2 _throwVector; 
 
     private WaitForSeconds startDelay = new WaitForSeconds(0f);
     private WaitForSeconds afterThrowDelay = new WaitForSeconds(0.5f);
 
     private bool isPressed;
 
-    IThrowable<Vector2> _iThrowable;
-
     #endregion
 
+    private void RecalculateThrowVector(Vector2 mousePosition, Vector2 playerPosition, Vector2 offset) => _throwVector = mousePosition - playerPosition + offset;
+
     #region Startup
+
+    private void OnEnable()
+    {
+        _playerInput.OnPress += OnPressHandler;
+        _playerInput.OnThrow += OnThrowHandler;
+    }
+
+    private void OnThrowHandler(Vector2 mousePosition)
+    {
+        _trajectoryRenderer.DeleteTrajectory();
+
+        RecalculateThrowVector(mousePosition, _playerPosition, _offset);
+
+        if (_itemRB != null && _itemRB.isKinematic)
+        {
+            ThrowItem(_throwVector);
+        }
+    }
+
+    private void OnPressHandler(Vector2 mousePosition)
+    {
+        RecalculateThrowVector(mousePosition, _playerPosition, _offset);
+
+        _trajectoryRenderer.DrawTrajectory(_throwPointPosition, _throwVector);
+    }
 
     private void Awake()
     {
@@ -50,7 +74,7 @@ public class PlayerController : MonoBehaviour
         _itemSocketPosition = _transform.GetChild(0).position;
         _throwPointPosition = _transform.GetChild(1).position;
         _trajectoryRenderer = TrajectoryRenderer.GetComponent<TrajectoryRenderer>();
-        _cam = Camera.main;
+        _playerInput = GetComponent<PlayerInputHandler>();
     }
 
     private void Start()
@@ -58,45 +82,13 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(SpawnItem(startDelay));
     }
 
+    private void OnDisable()
+    {
+        _playerInput.OnPress -= OnPressHandler;
+        _playerInput.OnThrow -= OnThrowHandler;
+    }
+
     #endregion
-
-    private void Update()
-    {
-        HandleInput();
-    }
-
-    private void HandleInput()
-    {
-        _mousePosition = _cam.ScreenToWorldPoint(Input.mousePosition);
-        _throwVector = _mousePosition - _playerPosition + offset;
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            isPressed = true;
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            if (isPressed)
-            {
-                _trajectoryRenderer.DeleteTrajectory();
-
-                if (_itemRB != null && _itemRB.isKinematic)
-                {
-                    _itemRB.isKinematic = false;
-
-                    ThrowItem(_throwVector);
-                }
-            }
-
-            isPressed = false;
-        }
-
-        if (isPressed)
-        {
-            _trajectoryRenderer.DrawTrajectory(_throwPointPosition, _throwVector);
-        }
-    }
 
     #region Item Controllers
 
@@ -107,6 +99,8 @@ public class PlayerController : MonoBehaviour
 
     private void ThrowItem(Vector2 throwVector)
     {
+        _itemRB.isKinematic = false;
+
         ChangeItemPos(_throwPointPosition);
 
         _item.GetComponent<IThrowable<Vector2>>()?.Throw(throwVector);

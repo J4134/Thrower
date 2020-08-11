@@ -509,7 +509,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dotPrefab: {fileID: 6295032405342969024, guid: 8b4873031b2a73849a8a361af8b1543d,
     type: 3}
-  _step: 0.2
+  _step: 0.1
 --- !u!1 &719513364
 GameObject:
   m_ObjectHideFlags: 0
@@ -667,6 +667,7 @@ GameObject:
   m_Component:
   - component: {fileID: 980858889}
   - component: {fileID: 980858888}
+  - component: {fileID: 980858890}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -689,7 +690,7 @@ MonoBehaviour:
   itemPrefab: {fileID: 3366718698019429003, guid: 4427bb026dada1941a05b1ec978f56d8,
     type: 3}
   TrajectoryRenderer: {fileID: 698187468}
-  offset: {x: 2, y: 7}
+  _offset: {x: 0, y: 5}
 --- !u!4 &980858889
 Transform:
   m_ObjectHideFlags: 0
@@ -708,6 +709,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &980858890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 980858887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 894995d591617d74db160becba780ff9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1044954076
 GameObject:
   m_ObjectHideFlags: 0
