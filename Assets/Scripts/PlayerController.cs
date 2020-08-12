@@ -93,13 +93,17 @@ public class PlayerController : MonoBehaviour
 
     private void ThrowItem(Vector2 throwVector)
     {
-        _itemRB.isKinematic = false;
+        if (_itemRB.isKinematic && _item != null)
+        {
+            _itemRB.isKinematic = false;
 
-        ChangeItemPos(_throwPointPosition);
+            ChangeItemPos(_throwPointPosition);
 
-        _item.GetComponent<IThrowable<Vector2>>()?.Throw(throwVector);
+            _item.GetComponent<IThrowable<Vector2>>()?.Throw(throwVector);
 
-        StartCoroutine(SpawnItem(_afterThrowDelay));
+            StartCoroutine(SpawnItem(_afterThrowDelay));
+        }
+       
     }
 
     private IEnumerator SpawnItem(WaitForSeconds delay)
