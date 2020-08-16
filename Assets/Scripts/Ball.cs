@@ -28,14 +28,6 @@ public class Ball : MonoBehaviour, IThrowable<Vector2>
 
     #region Collisions
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        //if (collision.gameObject.layer == 8)
-        //{
-        //    Physics.IgnoreCollision2D(_collider, 0);
-        //}
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Target"))

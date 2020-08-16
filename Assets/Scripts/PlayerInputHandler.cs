@@ -25,6 +25,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     #endregion
 
+    #region Handle Input
+
     private void Update()
     {
         HandleInput();
@@ -52,4 +54,6 @@ public class PlayerInputHandler : MonoBehaviour
             _isPressed = false;
         }
     }
+
+    #endregion
 }
