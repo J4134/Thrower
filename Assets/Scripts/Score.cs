@@ -12,7 +12,7 @@ public class Score : MonoBehaviour
 
     private void OnEnable()
     {
-        SceneEventBroker.HitTarget += UpdateScore;
+        SceneEventBroker.OnTargetHitted += UpdateScore;
     }
 
     private void Awake()
@@ -29,14 +29,13 @@ public class Score : MonoBehaviour
 
     private void OnDisable()
     {
-        SceneEventBroker.HitTarget -= UpdateScore;
+        SceneEventBroker.OnTargetHitted -= UpdateScore;
     }
 
     private void UpdateScore()
     {
-        _scoreCount += 1;
+        _scoreCount++;
         scoreLabel.text = $"{_prefix}: {Convert.ToString(_scoreCount)}";
     }
-
 
 }

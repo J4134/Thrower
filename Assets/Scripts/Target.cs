@@ -1,16 +1,30 @@
 ﻿using System.Collections;
-using System;
 using UnityEngine;
 
 public class Target : MonoBehaviour
 {
-    //delegate void _subscribe();
-    //_subscribe sub = SubscribeEvent;
 
-    private void SubscribeEvent(Action ActionToSubscribe)
+    [SerializeField] private float _delay = 1f;
+
+    private void OnEnable()
     {
-
+        SceneEventBroker.OnTargetHitted += DestroyTarget;
     }
 
+    private void OnDisable()
+    {
+        SceneEventBroker.OnTargetHitted -= DestroyTarget;
+    }
 
+    private void DestroyTarget()
+    {
+        StartCoroutine(CallDestroyWithDelay(_delay));
+    }
+
+    private IEnumerator CallDestroyWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        SceneEventBroker.CallTargetDestroy();
+        Destroy(gameObject);
+    }
 }

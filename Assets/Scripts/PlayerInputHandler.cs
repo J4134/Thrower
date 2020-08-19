@@ -6,10 +6,10 @@ public class PlayerInputHandler : MonoBehaviour
 
     #region Field Declarations
 
-    private Camera _camera;
-
     public event Action<Vector2> OnThrow;
     public event Action<Vector2> OnPress;
+
+    private Camera _camera;
 
     private bool _isPressed;
     private Vector2 _mousePosition { get => _camera.ScreenToWorldPoint(Input.mousePosition); }

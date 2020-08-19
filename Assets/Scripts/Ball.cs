@@ -9,6 +9,8 @@ public class Ball : MonoBehaviour, IThrowable<Vector2>
     private Collider2D _collider;
     private Rigidbody2D _rigidbody;
 
+    private int _collisionsCount = 0;
+
     #endregion
 
 
@@ -28,13 +30,25 @@ public class Ball : MonoBehaviour, IThrowable<Vector2>
 
     #region Collisions
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        _collisionsCount++;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Target"))
         {
-            // TODO: оповещение объекта score о пападании
-            Debug.Log("Есть пробитие!");
-            SceneEventBroker.CallHitTarget();
+            if (_collisionsCount == 0)
+            {
+                print("Чистый бросок");
+                SceneEventBroker.CallTargetHit();
+            }
+            else
+            {
+                print("Просто попадание");
+                SceneEventBroker.CallTargetHit();
+            }
         }
     }
 
