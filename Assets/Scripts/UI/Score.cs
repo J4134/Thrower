@@ -6,7 +6,7 @@ public class Score : MonoBehaviour
 {
     #region Varibles
 
-    [SerializeField] private int _scoreCount = -1;
+    public int scoreCount { get; private set; } = -1;
     [SerializeField] private string _prefix = "Score";
 
     private Text scoreLabel;
@@ -18,11 +18,13 @@ public class Score : MonoBehaviour
     private void OnEnable()
     {
         SceneEventBroker.OnTargetHitted += UpdateScore;
+        SceneEventBroker.OnGameOver += SaveScores;
     }
 
     private void OnDisable()
     {
         SceneEventBroker.OnTargetHitted -= UpdateScore;
+        SceneEventBroker.OnGameOver -= SaveScores;
     }
 
     private void Awake()
@@ -41,9 +43,11 @@ public class Score : MonoBehaviour
 
     private void UpdateScore()
     {
-        _scoreCount++;
-        scoreLabel.text = $"{_prefix}: {Convert.ToString(_scoreCount)}";
+        scoreCount++;
+        scoreLabel.text = $"{_prefix}: {Convert.ToString(scoreCount)}";
     }
+
+    private void SaveScores() => ProgressKeeper.UpdateMaxScore(scoreCount);
 
     #endregion
 

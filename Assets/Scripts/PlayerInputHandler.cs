@@ -30,16 +30,26 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnEnable()
     {
         SceneEventBroker.OnGameOver += DisableInput;
+        SceneEventBroker.OnPaused += DisableInput;
+        SceneEventBroker.OnUnpaused += EnableInput;
     }
 
     private void OnDisable()
     {
         SceneEventBroker.OnGameOver -= DisableInput;
+        SceneEventBroker.OnPaused -= DisableInput;
+        SceneEventBroker.OnUnpaused -= EnableInput;
     }
 
     #endregion
 
     private void DisableInput() => _isActive = false;
+
+    private void EnableInput()
+    {
+        _isPressed = false;
+        _isActive = true;
+    }
 
     #region Handle Input
 

@@ -8,13 +8,17 @@ public enum GameModes
 
 public class SceneEventBroker
 {
-    public static GameModes gameMode = GameModes.zen; 
+    public static GameModes gameMode = GameModes.zen;
 
+    public static event Action OnPaused;
+    public static event Action OnUnpaused;
     public static event Action OnTargetHitted;
     public static event Action OnTargetDestroyed;
     public static event Action OnMissed;
     public static event Action OnGameOver;
 
+    public static void CallPause() => OnPaused?.Invoke();
+    public static void CallUnpause() => OnUnpaused?.Invoke();
     public static void CallTargetHit() => OnTargetHitted?.Invoke();
     public static void CallTargetDestroy() => OnTargetDestroyed?.Invoke();
     public static void CallGameOver() => OnGameOver?.Invoke();

@@ -11,6 +11,22 @@ public class DynamicTrajectoryRenderer : TrajectoryRenderer
 
     #endregion
 
+    #region BuiltIn Methods
+
+    private void OnEnable()
+    {
+        SceneEventBroker.OnGameOver += DeleteTrajectory;
+        SceneEventBroker.OnUnpaused += DeleteTrajectory;
+    }
+
+    private void OnDisable()
+    {
+        SceneEventBroker.OnGameOver -= DeleteTrajectory;
+        SceneEventBroker.OnUnpaused -= DeleteTrajectory;
+    }
+
+    #endregion
+
     #region Overridden Methods
 
     public override void DrawTrajectory(Vector2 origin, Vector2 throwVector)

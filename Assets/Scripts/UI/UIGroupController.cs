@@ -1,14 +1,24 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class UIGroupController : MonoBehaviour
 {
     #region Variables
 
     [SerializeField]
-    private CanvasGroup inGameGroup;
+    private GameObject inGameGroup;
 
     [SerializeField]
-    private CanvasGroup onGameOverGroup;
+    private GameObject onGameOverGroup;
+
+    [SerializeField]
+    private GameObject pauseGroup;
+
+    [SerializeField]
+    private Text gameOverLabel;
+
+    [SerializeField]
+    private Score score;
 
     #endregion
 
@@ -17,39 +27,51 @@ public class UIGroupController : MonoBehaviour
     private void OnEnable()
     {
         SceneEventBroker.OnGameOver += OnGameOverUI;
+        SceneEventBroker.OnPaused += OnPausedUI;
+        SceneEventBroker.OnUnpaused += OnStartUI;
     }
 
     private void OnDisable()
     {
         SceneEventBroker.OnGameOver -= OnGameOverUI;
+        SceneEventBroker.OnPaused -= OnPausedUI;
+        SceneEventBroker.OnUnpaused -= OnStartUI;
     }
 
     private void Start()
     {
-        ShowGroup(inGameGroup);
-        HideGroup(onGameOverGroup);
+        OnStartUI();
     }
 
     #endregion
 
     #region Custom Methods
 
-    public void ShowGroup(CanvasGroup canvasGroup)
-    {
-        canvasGroup.interactable = true;
-        canvasGroup.alpha = 1;
-    }
-
-    public void HideGroup(CanvasGroup canvasGroup)
-    {
-        canvasGroup.interactable = false;
-        canvasGroup.alpha = 0;
-    }
-
     private void OnGameOverUI()
     {
-        ShowGroup(onGameOverGroup);
-        HideGroup(inGameGroup);
+        RewriteGameOverText();
+        onGameOverGroup.SetActive(true);
+        inGameGroup.SetActive(false);
+        pauseGroup.SetActive(false);
+    }
+
+    private void OnStartUI()
+    {
+        inGameGroup.SetActive(true);
+        onGameOverGroup.SetActive(false);
+        pauseGroup.SetActive(false);
+    }
+
+    private void OnPausedUI()
+    {
+        pauseGroup.SetActive(true);
+        inGameGroup.SetActive(false);
+        onGameOverGroup.SetActive(false);
+    }
+
+    private void RewriteGameOverText()
+    {
+        gameOverLabel.text = "You lose :(" + "\n\n" + "Score: " + score.scoreCount + "\n" + "Best score: " + PlayerPrefs.GetInt("maxScore"); 
     }
 
     #endregion
