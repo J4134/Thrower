@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     #region Field Declarations
 
     [SerializeField] private GameObject _itemPrefab;
+
     [SerializeField] private TrajectoryRenderer _trajectoryRenderer;
 
     [SerializeField] private Vector2 _offset = new Vector2(0f, 5f);

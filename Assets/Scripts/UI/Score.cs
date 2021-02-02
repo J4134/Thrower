@@ -4,21 +4,29 @@ using UnityEngine.UI;
 
 public class Score : MonoBehaviour
 {
+    #region Varibles
 
     [SerializeField] private int _scoreCount = -1;
     [SerializeField] private string _prefix = "Score";
 
     private Text scoreLabel;
 
+    #endregion
+
+    #region BuiltIn Methods
+
     private void OnEnable()
     {
         SceneEventBroker.OnTargetHitted += UpdateScore;
     }
 
+    private void OnDisable()
+    {
+        SceneEventBroker.OnTargetHitted -= UpdateScore;
+    }
+
     private void Awake()
     {
-        // TODO: реализовать перевод на старте
-
         scoreLabel = GetComponent<Text>();
     }
 
@@ -27,15 +35,16 @@ public class Score : MonoBehaviour
         UpdateScore();
     }
 
-    private void OnDisable()
-    {
-        SceneEventBroker.OnTargetHitted -= UpdateScore;
-    }
+    #endregion
+
+    #region Custom Methods
 
     private void UpdateScore()
     {
         _scoreCount++;
         scoreLabel.text = $"{_prefix}: {Convert.ToString(_scoreCount)}";
     }
+
+    #endregion
 
 }

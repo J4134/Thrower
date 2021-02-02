@@ -11,20 +11,38 @@ public class Ball : MonoBehaviour, IThrowable<Vector2>
 
     private int _collisionsCount = 0;
 
-    #endregion
+    private bool _canHitTarget = true;
 
+    private bool _isCalledMiss = false;
+    private bool _isHittedFirstTarget = false;
+    private bool _isHittedSecondTarget = false;
+
+    #endregion
 
     private void Awake()
     {
         _collider = GetComponent<Collider2D>();
         _rigidbody = GetComponent<Rigidbody2D>();
 
-        Physics2D.IgnoreLayerCollision(8, 9); // Слой мяча - 8
+        // Чтобы мяч до броска не сталкивался с брошенными мячами
+        gameObject.layer = 8;
+
+        // Слой мяча после броска - 8
+        Physics2D.IgnoreLayerCollision(8, 9); 
+    }
+
+    private void OnDestroy()
+    {
+        if (!_isHittedSecondTarget && !_isCalledMiss)
+        {
+            SceneEventBroker.CallMissed();
+        }
     }
 
     public void Throw(Vector2 throwVector)
     {
        _rigidbody.AddForce(throwVector, ForceMode2D.Impulse);
+        gameObject.layer = 9;
         Destroy(gameObject, 7f);
     }
 
@@ -35,19 +53,40 @@ public class Ball : MonoBehaviour, IThrowable<Vector2>
         _collisionsCount++;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D trigger)
     {
-        if (collision.CompareTag("Target"))
+        if (!trigger.GetComponent<TriggerType>())
         {
-            if (_collisionsCount == 0)
+            return;
+        }
+        else
+        {
+            var triggerType = trigger.GetComponent<TriggerType>().type;
+
+            if ((triggerType == TriggerType.Type.targetFirst) && _canHitTarget)
             {
-                print("Чистый бросок");
-                SceneEventBroker.CallTargetHit();
+                _isHittedFirstTarget = true;
             }
-            else
+            else if ((triggerType == TriggerType.Type.targetSecond) && _canHitTarget)
             {
-                print("Просто попадание");
-                SceneEventBroker.CallTargetHit();
+                if (_isHittedFirstTarget)
+                {
+                    _canHitTarget = false;
+                    SceneEventBroker.CallTargetHit();
+                    _isHittedSecondTarget = true;
+
+                    if (_collisionsCount > 0)
+                        print("Обычное попадание");
+                    else
+                        print("Чистое попадание");
+                }
+            }
+            else if (triggerType == TriggerType.Type.miss)
+            {
+                if (!_isHittedSecondTarget)
+                {
+                    SceneEventBroker.CallMissed();
+                }
             }
         }
     }

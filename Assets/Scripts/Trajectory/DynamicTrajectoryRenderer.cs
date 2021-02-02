@@ -4,7 +4,9 @@ public class DynamicTrajectoryRenderer : TrajectoryRenderer
 {
     #region Field Declarations
 
-    [SerializeField] private float _step = 0.1f;
+    [SerializeField] 
+    private float _step = 0.1f;
+
     private int DotsCount(Vector2 throwVector) => Mathf.RoundToInt(throwVector.magnitude);
 
     #endregion

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
+    
     [SerializeField] private GameObject _targetPrefab;
-
     private Transform _spawnZone;
 
     private float _leftEdgeX;
@@ -17,7 +17,7 @@ public class Spawner : MonoBehaviour
     {
         Vector2 _spawnZonePosition = new Vector2();
 
-        _spawnZone = GetComponent<Transform>();
+        _spawnZone = GetComponentInChildren<Transform>();
 
         _spawnZonePosition =  _spawnZone.localPosition;
         _leftEdgeX = _spawnZonePosition.x + (_spawnZone.localScale.x / 2);
