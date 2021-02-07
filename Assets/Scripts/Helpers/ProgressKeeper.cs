@@ -1,14 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public static class ProgressKeeper
+namespace Jaba.Thrower.Helpers
 {
-    public static void UpdateMaxScore(int newMaxScore)
+    public static class ProgressKeeper
     {
-        if (newMaxScore > PlayerPrefs.GetInt("maxScore"))
+        public static void UpdateMaxScore(int newMaxScore)
         {
-            PlayerPrefs.SetInt("maxScore", newMaxScore);
+            if (newMaxScore > PlayerPrefs.GetInt("maxScore"))
+                PlayerPrefs.SetInt("maxScore", newMaxScore);
         }
     }
 }

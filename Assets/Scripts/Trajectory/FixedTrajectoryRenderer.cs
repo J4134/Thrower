@@ -1,44 +1,52 @@
 ﻿using UnityEngine;
 
-public class FixedTrajectoryRenderer : TrajectoryRenderer
+namespace Jaba.Thrower.Trajectory
 {
-    #region Field Declarations
-
-    [SerializeField] private int _dotsCount = 10;
-
-    #endregion
-
-    private void Start()
+    public class FixedTrajectoryRenderer : TrajectoryRenderer
     {
-        CreateDots(_dotsCount);
-    }
+        #region Variables
 
-    #region Overridden Methods
+        [SerializeField]
+        private int _dotsCount = 10;
 
-    public override void DrawTrajectory(Vector2 origin, Vector2 throwVector)
-    {
-        if (_previousThrowVector != throwVector)
+        #endregion
+
+        #region BuiltIn Methods
+
+        private void Start()
         {
-            RelocateDots(_instantiatedDotsPosition, CalculateDotsPositions(origin, throwVector, _dotsCount, 0.1f));
+            CreateDots(_dotsCount);
+        }
 
-            foreach (GameObject dot in _instantiatedDots)
+        #endregion
+
+        #region Overridden Methods
+
+        public override void DrawTrajectory(Vector2 origin, Vector2 throwVector)
+        {
+            if (_previousThrowVector != throwVector)
             {
-                dot.SetActive(true);
+                RelocateDots(_instantiatedDotsPosition, CalculateDotsPositions(origin, throwVector, _dotsCount, 0.1f));
+
+                foreach (GameObject dot in _instantiatedDots)
+                {
+                    dot.SetActive(true);
+                }
             }
         }
-    }
 
-    public override void DeleteTrajectory()
-    {
-        if (_instantiatedDots.Count > 0)
+        public override void DeleteTrajectory()
         {
-            foreach (GameObject dot in _instantiatedDots)
+            if (_instantiatedDots.Count > 0)
             {
-                dot.SetActive(false);
+                foreach (GameObject dot in _instantiatedDots)
+                {
+                    dot.SetActive(false);
+                }
             }
         }
+
+        #endregion
+
     }
-
-    #endregion
-
 }

@@ -1,70 +1,82 @@
-﻿using UnityEngine;
+﻿using Jaba.Thrower.Helpers;
+using UnityEngine;
 
-public class DynamicTrajectoryRenderer : TrajectoryRenderer
+namespace Jaba.Thrower.Trajectory
 {
-    #region Field Declarations
-
-    [SerializeField] 
-    private float _step = 0.1f;
-
-    private int DotsCount(Vector2 throwVector) => Mathf.RoundToInt(throwVector.magnitude);
-
-    #endregion
-
-    #region BuiltIn Methods
-
-    private void OnEnable()
+    public class DynamicTrajectoryRenderer : TrajectoryRenderer
     {
-        SceneEventBroker.OnGameOver += DeleteTrajectory;
-        SceneEventBroker.OnUnpaused += DeleteTrajectory;
-    }
+        #region Variables
 
-    private void OnDisable()
-    {
-        SceneEventBroker.OnGameOver -= DeleteTrajectory;
-        SceneEventBroker.OnUnpaused -= DeleteTrajectory;
-    }
+        [SerializeField]
+        private float _step = 0.1f;
 
-    #endregion
+        #endregion
 
-    #region Overridden Methods
+        #region BuiltIn Methods
 
-    public override void DrawTrajectory(Vector2 origin, Vector2 throwVector)
-    {
-        if (_previousThrowVector != throwVector)
+        #region Subscribe/Unsubscribe
+
+        private void OnEnable()
         {
-            int newDotsCount = DotsCount(throwVector);
-            int currentDotsCount = _instantiatedDots.Count;
-            
-            if (currentDotsCount < newDotsCount)
-            {
-                CreateDots(newDotsCount - currentDotsCount);
-            }
-            else if (currentDotsCount > newDotsCount)
-            {
-                DeleteDots(currentDotsCount - newDotsCount);
-            }
+            SceneEventBroker.OnGameOver += DeleteTrajectory;
+            SceneEventBroker.OnUnpaused += DeleteTrajectory;
+        }
 
-            RelocateDots(_instantiatedDotsPosition, CalculateDotsPositions(origin, throwVector, _instantiatedDots.Count, _step));
+        private void OnDisable()
+        {
+            SceneEventBroker.OnGameOver -= DeleteTrajectory;
+            SceneEventBroker.OnUnpaused -= DeleteTrajectory;
+        }
 
-            foreach (GameObject dot in _instantiatedDots)
+        #endregion
+
+        #endregion
+
+        #region Custom Methods
+
+        private int DotsCount(Vector2 throwVector) => Mathf.RoundToInt(throwVector.magnitude);
+
+        #region Overridden Methods
+
+        public override void DrawTrajectory(Vector2 origin, Vector2 throwVector)
+        {
+            if (_previousThrowVector != throwVector)
             {
-                dot.SetActive(true);
+                int newDotsCount = DotsCount(throwVector);
+                int currentDotsCount = _instantiatedDots.Count;
+
+                if (currentDotsCount < newDotsCount)
+                {
+                    CreateDots(newDotsCount - currentDotsCount);
+                }
+                else if (currentDotsCount > newDotsCount)
+                {
+                    DeleteDots(currentDotsCount - newDotsCount);
+                }
+
+                RelocateDots(_instantiatedDotsPosition, CalculateDotsPositions(origin, throwVector, _instantiatedDots.Count, _step));
+
+                foreach (GameObject dot in _instantiatedDots)
+                {
+                    dot.SetActive(true);
+                }
             }
         }
-    }
 
-    public override void DeleteTrajectory()
-    {
-        if (_instantiatedDots.Count > 0)
+        public override void DeleteTrajectory()
         {
-            foreach (GameObject dot in _instantiatedDots)
+            if (_instantiatedDots.Count > 0)
             {
-                dot.SetActive(false);
+                foreach (GameObject dot in _instantiatedDots)
+                {
+                    dot.SetActive(false);
+                }
             }
         }
+
+        #endregion
+
+        #endregion
+
     }
-
-    #endregion
-
 }

@@ -1,88 +1,92 @@
 ﻿using UnityEngine;
 using System;
+using Jaba.Thrower.Helpers;
 
-public class PlayerInputHandler : MonoBehaviour
+namespace Jaba.Thrower
 {
-
-    #region Field Declarations
-
-    [SerializeField] 
-    private Vector2 offset = new Vector2(0f, 0f);
-
-    public event Action<Vector2> OnThrow;
-    public event Action<Vector2> OnPress;
-
-    private Camera _camera;
-
-    private bool _isPressed;
-    private bool _isActive = true;
-    private Vector2 _mousePosition { get => _camera.ScreenToWorldPoint(Input.mousePosition); }
-
-    #endregion
-
-    #region Startup
-
-    private void Awake()
+    public class PlayerInputHandler : MonoBehaviour
     {
-        _camera = Camera.main;
-    }
+        #region Variables
 
-    private void OnEnable()
-    {
-        SceneEventBroker.OnGameOver += DisableInput;
-        SceneEventBroker.OnPaused += DisableInput;
-        SceneEventBroker.OnUnpaused += EnableInput;
-    }
+        [SerializeField]
+        private Vector2 offset = new Vector2(0f, 0f);
 
-    private void OnDisable()
-    {
-        SceneEventBroker.OnGameOver -= DisableInput;
-        SceneEventBroker.OnPaused -= DisableInput;
-        SceneEventBroker.OnUnpaused -= EnableInput;
-    }
+        public Camera _camera;
 
-    #endregion
+        public event Action<Vector2> OnThrow;
+        public event Action<Vector2> OnPress;
 
-    private void DisableInput() => _isActive = false;
+        private bool _isPressed;
+        private bool _isActive = true;
 
-    private void EnableInput()
-    {
-        _isPressed = false;
-        _isActive = true;
-    }
+        private Vector2 _mousePosition { get => _camera.ScreenToWorldPoint(Input.mousePosition); }
 
-    #region Handle Input
+        #endregion
 
-    private void Update()
-    {
-        if (_isActive)
+        #region BuiltIn Methods
+
+        private void Awake()
         {
-            HandleInput();
-        }
-    }
-
-    private void HandleInput()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            _isPressed = true;
-        }
-         
-        if (_isPressed)
-        {
-            OnPress?.Invoke(_mousePosition + offset);
+            _camera = Camera.main;
         }
 
-        if (Input.GetMouseButtonUp(0))
-        {
-            if (_isPressed)
-            {
-                OnThrow?.Invoke(_mousePosition + offset);
-            }
+        #region Subscribe/Unsubscribe
 
+        private void OnEnable()
+        {
+            SceneEventBroker.OnGameOver += DisableInput;
+            SceneEventBroker.OnPaused += DisableInput;
+            SceneEventBroker.OnUnpaused += EnableInput;
+        }
+
+        private void OnDisable()
+        {
+            SceneEventBroker.OnGameOver -= DisableInput;
+            SceneEventBroker.OnPaused -= DisableInput;
+            SceneEventBroker.OnUnpaused -= EnableInput;
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Custom Methods
+
+        private void DisableInput() => _isActive = false;
+
+        private void EnableInput()
+        {
             _isPressed = false;
+            _isActive = true;
         }
-    }
 
-    #endregion
+        #region Handle Input
+
+        private void Update()
+        {
+            if (_isActive)
+                HandleInput();
+        }
+
+        private void HandleInput()
+        {
+            if (Input.GetMouseButtonDown(0))
+                _isPressed = true;
+
+            if (_isPressed)
+                OnPress?.Invoke(_mousePosition + offset);
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (_isPressed)
+                    OnThrow?.Invoke(_mousePosition + offset);
+
+                _isPressed = false;
+            }
+        }
+
+        #endregion
+
+        #endregion
+    }
 }

@@ -1,95 +1,110 @@
-﻿using UnityEngine;
+﻿using Jaba.Thrower.Helpers;
+using UnityEngine;
 
-[AddComponentMenu("ItemScript")]
-[RequireComponent(typeof(Rigidbody2D))]
-public class Ball : MonoBehaviour, IThrowable<Vector2>
+namespace Jaba.Thrower
 {
-    #region Field Declarations
-
-    private Collider2D _collider;
-    private Rigidbody2D _rigidbody;
-
-    private int _collisionsCount = 0;
-
-    private bool _canHitTarget = true;
-
-    private bool _isCalledMiss = false;
-    private bool _isHittedFirstTarget = false;
-    private bool _isHittedSecondTarget = false;
-
-    #endregion
-
-    private void Awake()
+    [AddComponentMenu("ItemScript")]
+    [RequireComponent(typeof(Rigidbody2D))]
+    public class Ball : MonoBehaviour, IThrowable<Vector2>
     {
-        _collider = GetComponent<Collider2D>();
-        _rigidbody = GetComponent<Rigidbody2D>();
+        #region Variables
 
-        // Чтобы мяч до броска не сталкивался с брошенными мячами
-        gameObject.layer = 8;
+        [SerializeField]
+        private float _startToque = 120f;
 
-        // Слой мяча после броска - 8
-        Physics2D.IgnoreLayerCollision(8, 9); 
-    }
+        private Rigidbody2D _rigidbody;
 
-    private void OnDestroy()
-    {
-        if (!_isHittedSecondTarget && !_isCalledMiss)
+        private int _collisionsCount = 0;
+
+        private bool _canHitTarget = true;
+        private bool _canMiss = true;
+
+        private bool _isCalledMiss = false;
+        private bool _isHittedFirstTarget = false;
+        private bool _isHittedSecondTarget = false;
+
+        #endregion
+
+        #region BuiltIn Methods
+
+        private void Awake()
         {
-            SceneEventBroker.CallMissed();
+            _rigidbody = GetComponent<Rigidbody2D>();
+
+            // Чтобы мяч до броска не сталкивался с брошенными мячами
+            gameObject.layer = 8;
+
+            // Слой мяча после броска - 8
+            Physics2D.IgnoreLayerCollision(8, 9);
         }
-    }
 
-    public void Throw(Vector2 throwVector)
-    {
-       _rigidbody.AddForce(throwVector, ForceMode2D.Impulse);
-        gameObject.layer = 9;
-        Destroy(gameObject, 7f);
-    }
-
-    #region Collisions
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        _collisionsCount++;
-    }
-
-    private void OnTriggerEnter2D(Collider2D trigger)
-    {
-        if (!trigger.GetComponent<TriggerType>())
+        private void OnDestroy()
         {
-            return;
+            if (!_isHittedSecondTarget && !_isCalledMiss)
+            {
+                SceneEventBroker.CallMissed();
+            }
         }
-        else
+
+        #region Collisions
+
+        private void OnCollisionEnter2D(Collision2D collision)
         {
+            _collisionsCount++;
+        }
+
+        private void OnTriggerEnter2D(Collider2D trigger)
+        {
+            if (!trigger.GetComponent<TriggerType>())
+            {
+                return;
+            }
+
             var triggerType = trigger.GetComponent<TriggerType>().type;
 
-            if ((triggerType == TriggerType.Type.targetFirst) && _canHitTarget)
+            if (triggerType == TriggerType.Type.targetFirst && _canHitTarget)
             {
                 _isHittedFirstTarget = true;
             }
-            else if ((triggerType == TriggerType.Type.targetSecond) && _canHitTarget)
+            else if (triggerType == TriggerType.Type.targetSecond && _canHitTarget)
             {
                 if (_isHittedFirstTarget)
                 {
                     _canHitTarget = false;
-                    SceneEventBroker.CallTargetHit();
+                    _canMiss = false;
                     _isHittedSecondTarget = true;
 
                     if (_collisionsCount > 0)
-                        print("Обычное попадание");
+                        SceneEventBroker.CallTargetHit();
                     else
-                        print("Чистое попадание");
+                        SceneEventBroker.CallCleanTargetHit();
                 }
             }
-            else if (triggerType == TriggerType.Type.miss)
+            else
             {
-                if (!_isHittedSecondTarget)
+                if (!_isHittedSecondTarget && _canMiss)
                 {
                     SceneEventBroker.CallMissed();
+                    _isCalledMiss = true;
+                    _canMiss = false;
                 }
             }
         }
-    }
 
-    #endregion
+        #endregion
+
+        #endregion
+
+        #region Custom Methods
+
+        public void Throw(Vector2 throwVector)
+        {
+            _rigidbody.AddForce(throwVector, ForceMode2D.Impulse);
+            _rigidbody.AddTorque(_startToque);
+            gameObject.layer = 9;
+            Destroy(gameObject, 7f);
+        }
+
+        #endregion
+    }
 }

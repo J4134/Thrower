@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f23d957e50f90ff4fbc5570bba6d0fbe
+guid: 7e17afe0861534e4096947328863bff5
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -8,13 +8,13 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Press Start 2P
+  fontName: Erix Outline
   fontNames:
-  - Press Start 2P
+  - Erix Outline
   fallbackFontReferences: []
   customCharacters: 
-  fontRenderingMode: 2
-  ascentCalculationMode: 2
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
   useLegacyBoundsCalculation: 0
   shouldRoundAdvanceValue: 1
   userData: 

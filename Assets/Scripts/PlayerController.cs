@@ -1,119 +1,132 @@
-﻿using System;
+﻿using Jaba.Thrower.Trajectory;
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerInputHandler))]
-public class PlayerController : MonoBehaviour
+namespace Jaba.Thrower
 {
-
-    #region Field Declarations
-
-    [SerializeField] private GameObject _itemPrefab;
-
-    [SerializeField] private TrajectoryRenderer _trajectoryRenderer;
-
-    [SerializeField] private Vector2 _offset = new Vector2(0f, 5f);
-
-    private GameObject _item;
-    private Rigidbody2D _itemRB; 
-    private PlayerInputHandler _playerInput;
-
-    private Vector2 _playerPosition;
-    private Vector2 _itemSocketPosition;
-    private Vector2 _throwPointPosition;
-    private Vector2 _throwVector; 
-
-    private WaitForSeconds _startDelay = new WaitForSeconds(0f);
-    private WaitForSeconds _afterThrowDelay = new WaitForSeconds(0.5f);
-
-    #endregion
-
-    private void RecalculateThrowVector(Vector2 mousePosition, Vector2 playerPosition, Vector2 offset) => _throwVector = mousePosition - playerPosition + offset;
-
-    #region Startup
-
-    private void Awake()
+    [RequireComponent(typeof(PlayerInputHandler))]
+    public class PlayerController : MonoBehaviour
     {
-        Transform _transform = gameObject.transform;
+        #region Variables
 
-        // TODO: переписать к хуям
-        _playerPosition = _transform.position;
-        _itemSocketPosition = _transform.GetChild(0).position;
-        _throwPointPosition = _transform.GetChild(1).position;
-        _playerInput = GetComponent<PlayerInputHandler>();
-    }
+        [SerializeField] 
+        private GameObject _itemPrefab;
 
-    private void Start()
-    {
-        StartCoroutine(SpawnItem(_startDelay));
-    }
+        [SerializeField] 
+        private TrajectoryRenderer _trajectoryRenderer;
 
-    #endregion
+        [SerializeField] 
+        private Vector2 _offset = new Vector2(0f, 5f);
 
-    #region Subscribe / Unsubscribe
+        [SerializeField] 
+        private GameObject _playerModel;
 
-    private void OnEnable()
-    {
-        _playerInput.OnPress += OnPressHandler;
-        _playerInput.OnThrow += OnThrowHandler;
-    }
+        private GameObject _item;
+        private Rigidbody2D _itemRB;
+        private PlayerInputHandler _playerInput;
+        private Animator _playerAnim;
 
-    private void OnDisable()
-    {
-        _playerInput.OnPress -= OnPressHandler;
-        _playerInput.OnThrow -= OnThrowHandler;
-    }
+        private Vector2 _playerPosition;
+        private Vector2 _itemSocketPosition;
+        private Vector2 _throwPointPosition;
+        private Vector2 _throwVector;
 
-    #endregion
+        private readonly WaitForSeconds _startDelay = new WaitForSeconds(0f);
+        private readonly WaitForSeconds _afterThrowDelay = new WaitForSeconds(0.932f);
 
-    #region Handlers
+        #endregion
 
-    private void OnThrowHandler(Vector2 mousePosition)
-    {
-        _trajectoryRenderer.DeleteTrajectory();
+        #region BuiltIn Methods
 
-        RecalculateThrowVector(mousePosition, _playerPosition, _offset);
+        #region Subscribe/Unsubscribe
 
-        ThrowItem(_throwVector);
-    }
-
-    private void OnPressHandler(Vector2 mousePosition)
-    {
-        RecalculateThrowVector(mousePosition, _playerPosition, _offset);
-
-        _trajectoryRenderer.DrawTrajectory(_throwPointPosition, _throwVector);
-    }
-
-    #endregion
-
-    #region Item Controllers
-
-    private void ChangeItemPos(Vector2 newPos)
-    {
-        _item.transform.position = newPos;
-    }
-
-    private void ThrowItem(Vector2 throwVector)
-    {
-        if (_itemRB.isKinematic && _item != null)
+        private void OnEnable()
         {
-            _itemRB.isKinematic = false;
-
-            ChangeItemPos(_throwPointPosition);
-
-            _item.GetComponent<IThrowable<Vector2>>()?.Throw(throwVector);
-
-            StartCoroutine(SpawnItem(_afterThrowDelay));
+            _playerInput.OnPress += OnPressHandler;
+            _playerInput.OnThrow += OnThrowHandler;
         }
-       
-    }
 
-    private IEnumerator SpawnItem(WaitForSeconds delay)
-    {
-        yield return delay;
-        _item = Instantiate(_itemPrefab, _itemSocketPosition, Quaternion.identity);
-        _itemRB = _item.GetComponent<Rigidbody2D>();
-    }
+        private void OnDisable()
+        {
+            _playerInput.OnPress -= OnPressHandler;
+            _playerInput.OnThrow -= OnThrowHandler;
+        }
 
-    #endregion
+        #endregion
+
+        private void Awake()
+        {
+            Transform _transform = gameObject.transform;
+
+            _playerPosition = _transform.position;
+            _itemSocketPosition = _transform.GetChild(0).position;
+            _throwPointPosition = _transform.GetChild(1).position;
+
+            _playerInput = GetComponent<PlayerInputHandler>();
+            _playerAnim = _playerModel.GetComponent<Animator>();
+
+        }
+
+        private void Start()
+        {
+            StartCoroutine(SpawnItem(_startDelay));
+        }
+
+        #endregion
+
+        #region Custom Methods
+
+        private void RecalculateThrowVector(Vector2 mousePosition, Vector2 playerPosition, Vector2 offset) => _throwVector = mousePosition - playerPosition + offset;
+
+        #region Handlers
+
+        private void OnThrowHandler(Vector2 mousePosition)
+        {
+            _trajectoryRenderer.DeleteTrajectory();
+
+            RecalculateThrowVector(mousePosition, _playerPosition, _offset);
+
+            ThrowItem(_throwVector);
+
+            _playerAnim.Play("Throw");
+        }
+
+        private void OnPressHandler(Vector2 mousePosition)
+        {
+            RecalculateThrowVector(mousePosition, _playerPosition, _offset);
+
+            _trajectoryRenderer.DrawTrajectory(_throwPointPosition, _throwVector);
+        }
+
+        #endregion
+
+        #region Item Controllers
+
+        private void ChangeItemPos(Vector2 newPos) => _item.transform.position = newPos;
+
+        private void ThrowItem(Vector2 throwVector)
+        {
+            if (_itemRB.isKinematic && _item != null)
+            {
+                _itemRB.isKinematic = false;
+
+                ChangeItemPos(_throwPointPosition);
+
+                _item.GetComponent<IThrowable<Vector2>>()?.Throw(throwVector);
+
+                StartCoroutine(SpawnItem(_afterThrowDelay));
+            }
+        }
+
+        private IEnumerator SpawnItem(WaitForSeconds delay)
+        {
+            yield return delay;
+            _item = Instantiate(_itemPrefab, _itemSocketPosition, Quaternion.identity);
+            _itemRB = _item.GetComponent<Rigidbody2D>();
+        }
+
+        #endregion
+
+        #endregion
+    }
 }

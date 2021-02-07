@@ -1,25 +1,29 @@
-﻿using UnityEngine;
+﻿using Jaba.Thrower.Helpers;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class InGameButtons : MonoBehaviour
+namespace Jaba.Thrower.UI
 {
-    public void ReloadScene() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-
-    public void LoadMenu()
+    public class InGameButtons : MonoBehaviour
     {
-        SceneManager.LoadScene("Menu");
-        Time.timeScale = 1f;
-    }
+        public void ReloadScene() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
-    public void Pause()
-    {
-        SceneEventBroker.CallPause();
-        Time.timeScale = 0f;
-    }
+        public void LoadMenu()
+        {
+            SceneManager.LoadScene("Menu");
+            Time.timeScale = 1f;
+        }
 
-    public void Unpause()
-    {
-        Time.timeScale = 1f;
-        SceneEventBroker.CallUnpause();
+        public void Pause()
+        {
+            SceneEventBroker.CallPause();
+            Time.timeScale = 0f;
+        }
+
+        public void Unpause()
+        {
+            Time.timeScale = 1f;
+            SceneEventBroker.CallUnpause();
+        }
     }
 }

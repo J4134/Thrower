@@ -1,17 +1,21 @@
-﻿using UnityEngine;
+﻿using Jaba.Thrower.Helpers;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MenuButtons : MonoBehaviour
+namespace Jaba.Thrower.UI
 {
-    public void LoadZenMode()
+    public class MenuButtons : MonoBehaviour
     {
-        SceneEventBroker.gameMode = GameModes.zen;
-        SceneManager.LoadScene("SampleScene");
-    }
+        public void LoadZenMode()
+        {
+            SceneEventBroker.gameMode = GameModes.zen;
+            SceneManager.LoadScene("SampleScene");
+        }
 
-    public void LoadChallengeMode()
-    {
-        SceneEventBroker.gameMode = GameModes.challange;
-        SceneManager.LoadScene("SampleScene");
+        public void LoadChallengeMode()
+        {
+            SceneEventBroker.gameMode = GameModes.challange;
+            SceneManager.LoadScene("SampleScene");
+        }
     }
 }

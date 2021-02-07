@@ -1,30 +1,48 @@
-﻿using System.Collections;
+﻿using Jaba.Thrower.Helpers;
+using System.Collections;
 using UnityEngine;
 
-public class Target : MonoBehaviour
+namespace Jaba.Thrower
 {
-
-    [SerializeField] private float _delay = 1f;
-
-    private void OnEnable()
+    public class Target : MonoBehaviour
     {
-        SceneEventBroker.OnTargetHitted += DestroyTarget;
-    }
+        #region Variables
 
-    private void OnDisable()
-    {
-        SceneEventBroker.OnTargetHitted -= DestroyTarget;
-    }
+        [SerializeField] private float _delay = 1f;
 
-    private void DestroyTarget()
-    {
-        StartCoroutine(CallDestroyWithDelay(_delay));
-    }
+        #endregion
 
-    private IEnumerator CallDestroyWithDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        SceneEventBroker.CallTargetDestroy();
-        Destroy(gameObject);
+        #region BuiltIn Methods
+
+        #region Subscribe/Unsubscribe
+
+        private void OnEnable()
+        {
+            SceneEventBroker.OnTargetHitted += DestroyTarget;
+            SceneEventBroker.OnCleanTargetHitted += DestroyTarget;
+        }
+
+        private void OnDisable()
+        {
+            SceneEventBroker.OnTargetHitted -= DestroyTarget;
+            SceneEventBroker.OnCleanTargetHitted -= DestroyTarget;
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Custom Methods
+
+        private void DestroyTarget() => StartCoroutine(CallDestroyWithDelay(_delay));
+
+        private IEnumerator CallDestroyWithDelay(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            SceneEventBroker.CallTargetDestroy();
+            Destroy(gameObject);
+        }
+
+        #endregion
     }
 }
